@@ -23,4 +23,4 @@ last step is to run the server, using the following command
 $ python manage.py runserver
 ```
 
-Once the server is hosted, head over to http://127.0.0.1:8000/todos for the App.
+Once the server is hosted, head over to http://127.0.0.1:8000/todolist for the App.
