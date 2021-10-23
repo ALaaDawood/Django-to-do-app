@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'todo.apps.TodoConfig'
+    'todo.apps.TodoConfig',
+    'rest_framework.authtoken',
+    'user',
 ]
 
 MIDDLEWARE = [
@@ -69,8 +71,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'todosite.wsgi.application'
+AUTH_USER_MODEL = 'user.User'
 
-
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'authentication_backends.BearerAuthentication',
+    )
+}
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
