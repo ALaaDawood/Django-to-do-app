@@ -1,17 +1,13 @@
 from django.db import models
-from django.db.models.base import Model
+class TASKSTATES(models.TextChoices):
+    TODO = 'T',('TO-DO')
+    INPROGRESS = 'I',('In-Progress')
+    DONE = 'D',('Done')
+
 class Task(models.Model):
-    TODO = 'T'
-    INPROGESSS = 'I'
-    DONE = 'D'
-    TASK_STATES = (
-        (TODO, 'To-DO'),
-        (INPROGESSS, 'In-progress'),
-        (DONE, 'Done'),
-    )
 
     title=models.CharField(max_length=300)
-    state=models.CharField(max_length=200,choices=TASK_STATES, default=TODO)
+    state=models.CharField(max_length=200,choices=TASKSTATES.choices, default=TASKSTATES.TODO)
     creation_date=models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:

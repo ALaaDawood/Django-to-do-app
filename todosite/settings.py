@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'todo.apps.TodoConfig',
     'rest_framework.authtoken',
     'user',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -72,6 +73,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'todosite.wsgi.application'
 AUTH_USER_MODEL = 'user.User'
+LOGIN_URL = '/user/login'
 
 REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
