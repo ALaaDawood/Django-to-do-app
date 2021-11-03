@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from django.db import models
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import (
@@ -99,6 +100,10 @@ class User(AbstractBaseUser):
     def token(self):
         token, _ = Token.objects.get_or_create(user=self)
         return token
+
+    def save(self, *args, **kwargs):
+        self.password = make_password(self.password)
+        super(User, self).save(*args, **kwargs)
 
     objects = UserManager()
 

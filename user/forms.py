@@ -15,7 +15,7 @@ class RegisterForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['email']
+        fields = ['email','password']
 
     def clean_email(self):
         '''
@@ -34,10 +34,9 @@ class RegisterForm(forms.ModelForm):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
         password_2 = cleaned_data.get("password_2")
-        if password is not None and password != password_2:
+        if password and password != password_2:
             self.add_error("password_2", "Your passwords must match")
         return cleaned_data
-
 
 class LoginForm(forms.Form):
     email = forms.CharField(max_length=63)
