@@ -5,17 +5,17 @@ from django.utils.functional import SimpleLazyObject
 from django.conf import settings
 from django.shortcuts import redirect
 
+
 def dashboard(request):
     if not request.user.is_authenticated:
-        return redirect('%s?next=%s' % (settings.LOGIN_URL, request.path))
+        return redirect("%s?next=%s" % (settings.LOGIN_URL, request.path))
     tasks = Task.objects.all()
-    return render(request, 'dashboard.html', {"tasks": tasks})
-
+    return render(request, "dashboard.html", {"tasks": tasks})
 
 
 def create(request):
     print(request.user)
-    if isinstance(request.user,SimpleLazyObject):
-        return HttpResponse({},status = status.HTTP_401_UNAUTHORIZED)
+    if isinstance(request.user, SimpleLazyObject):
+        return HttpResponse({}, status=status.HTTP_401_UNAUTHORIZED)
 
     return HttpResponse({})

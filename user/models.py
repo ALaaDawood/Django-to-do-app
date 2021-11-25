@@ -1,9 +1,8 @@
 from django.contrib.auth.hashers import make_password
 from django.db import models
 from rest_framework.authtoken.models import Token
-from django.contrib.auth.models import (
-    BaseUserManager, AbstractBaseUser
-)
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None):
@@ -11,7 +10,7 @@ class UserManager(BaseUserManager):
         Creates and saves a User with the given email and password.
         """
         if not email:
-            raise ValueError('Users must have an email address')
+            raise ValueError("Users must have an email address")
 
         user = self.model(
             email=self.normalize_email(email),
@@ -49,19 +48,18 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser):
     email = models.EmailField(
-        verbose_name='email address',
+        verbose_name="email address",
         max_length=255,
         unique=True,
     )
     is_active = models.BooleanField(default=True)
-    staff = models.BooleanField(default=False) # a admin user; non super-user
-    admin = models.BooleanField(default=False) # a superuser
-    first_name = models.CharField(verbose_name='first name', max_length=100)
-    last_name = models.CharField(verbose_name='last name', max_length=100)
-
+    staff = models.BooleanField(default=False)  # a admin user; non super-user
+    admin = models.BooleanField(default=False)  # a superuser
+    first_name = models.CharField(verbose_name="first name", max_length=100)
+    last_name = models.CharField(verbose_name="last name", max_length=100)
 
     # notice the absence of a "Password field", that is built in.
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     def get_full_name(self):
@@ -95,7 +93,6 @@ class User(AbstractBaseUser):
         "Is the user a admin member?"
         return self.admin
 
-
     @property
     def token(self):
         token, _ = Token.objects.get_or_create(user=self)
@@ -106,4 +103,3 @@ class User(AbstractBaseUser):
         super(User, self).save(*args, **kwargs)
 
     objects = UserManager()
-

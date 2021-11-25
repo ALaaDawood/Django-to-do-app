@@ -1,4 +1,6 @@
 {
     "files.trimTrailingWhitespace": true,
-    "files.exclude": {}
+    "files.exclude": {},
+    "python.formatting.provider": "black",
+    "editor.formatOnSave": true
 }
