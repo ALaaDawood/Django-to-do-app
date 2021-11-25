@@ -5,10 +5,6 @@ from user.models import User
 User = get_user_model()
 
 class RegisterForm(forms.ModelForm):
-    """
-    The default
-
-    """
 
     password = forms.CharField(widget=forms.PasswordInput)
     password_2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
