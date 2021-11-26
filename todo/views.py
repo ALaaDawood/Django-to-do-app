@@ -1,10 +1,9 @@
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render, HttpResponse
+from django.shortcuts import get_object_or_404, render
 
 from todo.forms import TaskForm
 from .models import Task
 from rest_framework import status
-from django.utils.functional import SimpleLazyObject
 from django.conf import settings
 from django.shortcuts import redirect
 
@@ -29,11 +28,3 @@ def task_view(request, task_id=None):
     else:
         task_form = TaskForm(instance=task)
     return render(request, "task.html", {"form": task_form})
-
-
-# def create(request):
-#     print(request.user)
-#     if isinstance(request.user, SimpleLazyObject):
-#         return HttpResponse({}, status=status.HTTP_401_UNAUTHORIZED)
-
-#     return HttpResponse({})
