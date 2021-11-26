@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, client
 from todo.models import Task, TASKSTATES
 from django.test import Client
 from .models import Task
@@ -17,18 +17,39 @@ class TestTaskModel(TestCase):
         Task.objects.create(title=title)
 
 
-class TestTaskList(TestCase):
+class TestTaskView(TestCase):
     def setUp(self):
         self.client = Client()
 
     def test_task_default_state(self):
         todo_task = Task.objects.create(title="test first task with default state")
         in_progress_task = Task.objects.create(title="test task with state", state="I")
-
         self.assertEqual(todo_task.get_state_display(), TASKSTATES.TODO.label)
         self.assertEqual(
             in_progress_task.get_state_display(), TASKSTATES.INPROGRESS.label
         )
+
+    def test_task_view_get_task(self):
+        task = Task.objects.create(title="to do task")
+        response = self.client.get(f"/todolist/{task.id}/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed("task.html")
+
+    def test_task_view_create_task(self):
+        task = {"title": "TaskTest", "state": "I"}
+        response = self.client.post("/todolist/add/", task)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Task.objects.filter(title="TaskTest").count(), 1)
+
+    def test_task_view_edit_task(self):
+        task = Task.objects.create(title="secondTask", state="T")
+        response = self.client.post(
+            f"/todolist/{task.id}/", {"title": "TaskTest1", "state": "I"}
+        )
+        self.assertEqual(response.status_code, 302)
+        task.refresh_from_db()
+        self.assertEqual(task.title, "TaskTest1")
+        self.assertEqual(Task.objects.filter(title="secondTask").count(), 0)
 
     # def test_only_authenticated_users_can_access_dashboard(self):
     #     response = self.client.get('/todolist')
@@ -62,4 +83,16 @@ class TestTaskFormValidations(TestCase):
         self.assertEqual(
             task_form.errors["state"][0],
             "Select a valid choice. P is not one of the available choices.",
+        )
+
+    def test_required_fields_validation(self):
+        task_form = TaskForm({})
+        self.assertEqual(task_form.is_valid(), False)
+        self.assertEqual(
+            task_form.errors["title"][0],
+            "This field is required.",
+        )
+        self.assertEqual(
+            task_form.errors["state"][0],
+            "This field is required.",
         )

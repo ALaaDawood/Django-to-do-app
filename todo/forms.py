@@ -7,6 +7,3 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = ["title", "state"]
-
-    # def create_task(self):
-    #     pass

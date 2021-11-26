@@ -1,42 +1,60 @@
 from django.test import TestCase
-from user.forms import RegisterForm
+from user.forms import LoginForm, RegisterForm
 from user.models import User
 
 from user.views import signup
 
 test_email = "test@email.com"
+required_err_msg = "This field is required."
 
 
-class TestSignUp(TestCase):
-    def setUp(self):
-        self.user = User.objects.create(
-            email="testemail@email.com", password="test_password"
-        )
-
+class TestRegisterationForm(TestCase):
     def test_registeration_form_confirm_password_field_label(self):
         form = RegisterForm()
-        self.assertTrue(form.fields["password_2"].label == "Confirm Password")
+        self.assertTrue(form.fields["confirm_password"].label == "Confirm Password")
 
     def test_registeration_form_unique_email_validation(self):
+        User.objects.create(email="testemail@email.com", password="test_password")
         user_data = {
             "email": "testemail@email.com",
             "password": "123456",
-            "password_2": "123456",
+            "confirm_password": "123456",
         }
         form = RegisterForm(user_data)
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors["email"][0], "email is taken")
 
-    def test_registeration_form_password_match(self):
-        user_data = {"email": test_email, "password": "123456", "password_2": "54621"}
+    def test_registeration_form_password_match_validation(self):
+        user_data = {
+            "email": test_email,
+            "password": "123456",
+            "confirm_password": "54621",
+        }
         form = RegisterForm(user_data)
         self.assertFalse(form.is_valid())
-        self.assertEqual(form.errors["password_2"][0], "Your passwords must match")
+        self.assertEqual(
+            form.errors["confirm_password"][0], "Your passwords must match"
+        )
 
     def test_registeration_form_validates_user(self):
-        user_data = {"email": test_email, "password": "123456", "password_2": "123456"}
+        user_data = {
+            "email": test_email,
+            "password": "123456",
+            "confirm_password": "123456",
+        }
         form = RegisterForm(user_data)
         self.assertTrue(form.is_valid())
 
-    def tearDown(self):
-        User.objects.filter(id=self.user.id).delete()
+    def test_registeration_form_required_fields(self):
+        form = RegisterForm({})
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors["email"][0], required_err_msg)
+        self.assertEqual(form.errors["password"][0], required_err_msg)
+
+
+class TestLoginForm(TestCase):
+    def test_login_form_required_fields(self):
+        form = LoginForm({})
+        self.assertEqual(form.is_valid(), False)
+        self.assertEqual(form.errors["email"][0], required_err_msg)
+        self.assertEqual(form.errors["password"][0], required_err_msg)

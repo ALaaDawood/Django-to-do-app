@@ -10,7 +10,7 @@ def signup(request):
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
-            return redirect("dashboard")
+            return redirect("todo/dashboard/")
     else:
         form = RegisterForm()
     return render(request, "register.html", {"form": form})
@@ -26,7 +26,7 @@ def login(request):
                 return HttpResponse("user not found")
             if user.check_password(form.cleaned_data["password"]):
                 auth_login(request, user)
-                return redirect("dashboard")
+                return redirect("todo/dashboard/")
     else:
         form = LoginForm()
     return render(request, "login.html", {"form": form})

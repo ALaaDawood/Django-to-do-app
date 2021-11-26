@@ -5,40 +5,41 @@ Tasks -
 {% endblock title %}
 <style>
     body {
-    font-family: "Open Sans", sans-serif;
-    line-height: 1.6;
-}
-.add-todo-input,
-.edit-todo-input {
-    outline: none;
-}
+        font-family: "Open Sans", sans-serif;
+        line-height: 1.6;
+    }
 
-.add-todo-input:focus,
-.edit-todo-input:focus {
-    border: none !important;
-    box-shadow: none !important;
-}
+    .add-todo-input,
+    .edit-todo-input {
+        outline: none;
+    }
 
-.view-opt-label,
-.date-label {
-    font-size: 0.8rem;
-}
+    .add-todo-input:focus,
+    .edit-todo-input:focus {
+        border: none !important;
+        box-shadow: none !important;
+    }
 
-.edit-todo-input {
-    font-size: 1.7rem !important;
-}
+    .view-opt-label,
+    .date-label {
+        font-size: 0.8rem;
+    }
 
-.todo-actions {
-    visibility: hidden !important;
-}
+    .edit-todo-input {
+        font-size: 1.7rem !important;
+    }
 
-.todo-item:hover .todo-actions {
-    visibility: visible !important;
-}
+    .todo-actions {
+        visibility: hidden !important;
+    }
 
-.todo-item.editing .todo-actions .edit-icon {
-    display: none !important;
-}
+    .todo-item:hover .todo-actions {
+        visibility: visible !important;
+    }
+
+    .todo-item.editing .todo-actions .edit-icon {
+        display: none !important;
+    }
 </style>
 {% block content %}
 <div class="container m-6 p-2 rounded mx-auto bg-light shadow">
@@ -62,12 +63,17 @@ Tasks -
                     </h2>
                 </div> -->
                 <div class="col px-1 m-1 d-flex align-items-center">
-                    <h4 class="mb-0">{{task.id}}</h4>
-                    <input type="text" class="form-control form-control-lg border-0 edit-todo-input bg-transparent rounded px-3" readonly value="{{task.title}}" title="{{task.title}}" />
-                    <input type="text" class="form-control form-control-lg border-0 edit-todo-input rounded px-3 d-none" value="{{task.title}}" />
+                    <h4 class="mb-0"><a href="{{task.id}}">{{task.id}}</a> </h4>
+                    <input type="text"
+                        class="form-control form-control-lg border-0 edit-todo-input bg-transparent rounded px-3"
+                        readonly value="{{task.title}}" title="{{task.title}}" />
+                    <input type="text" class="form-control form-control-lg border-0 edit-todo-input rounded px-3 d-none"
+                        value="{{task.title}}" />
                 </div>
                 <div class="col px-1  m-1 d-flex">
-                    <h4 class="mb-0"><span class="{% if task.state == 'T' %}badge bg-dark{% endif %} {% if task.state == 'I' %}badge bg-primary{% endif %} {% if task.state == 'D' %}badge bg-success{% endif %}">{{task.get_state_display}}</span></h4>
+                    <h4 class="mb-0"><span
+                            class="{% if task.state == 'T' %}badge bg-dark{% endif %} {% if task.state == 'I' %}badge bg-primary{% endif %} {% if task.state == 'D' %}badge bg-success{% endif %}">{{task.get_state_display}}</span>
+                    </h4>
                 </div>
                 <div class="col-auto m-1 p-0 todo-actions">
                     <!-- <div class="row d-flex align-items-center justify-content-end">
@@ -80,7 +86,8 @@ Tasks -
                     </div> -->
                     <div class="row todo-created-info">
                         <div class="col-auto d-flex align-items-center pr-2">
-                            <i class="fa fa-info-circle my-2 px-2 text-black-50 btn" data-toggle="tooltip" data-placement="bottom" title="Creation date" data-original-title="Created date"></i>
+                            <i class="fa fa-info-circle my-2 px-2 text-black-50 btn" data-toggle="tooltip"
+                                data-placement="bottom" title="Creation date" data-original-title="Created date"></i>
                             <label class="date-label my-2 text-black-50">{{task.creation_date}}</label>
                         </div>
                     </div>
