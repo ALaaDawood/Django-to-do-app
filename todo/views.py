@@ -1,11 +1,11 @@
 from django.http.response import HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
-
-from todo.forms import TaskForm
+from django.shortcuts import get_object_or_404, render, redirect
+from .forms import TaskForm
 from .models import Task
-from rest_framework import status
 from django.conf import settings
-from django.shortcuts import redirect
+from django.contrib.auth.decorators import (
+    permission_required,
+)
 
 
 def dashboard(request):
@@ -15,6 +15,11 @@ def dashboard(request):
     return render(request, "dashboard.html", {"tasks": tasks})
 
 
+def admin_user_check(user):
+    return user.is_admin
+
+
+@permission_required(["todo.change_task", "todo.add_task"])
 def task_view(request, task_id=None):
     if task_id is None:
         task = Task()

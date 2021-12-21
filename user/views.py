@@ -1,6 +1,7 @@
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login
+from django.contrib.auth.models import Group
 from user.forms import LoginForm, RegisterForm, User
 
 
@@ -9,6 +10,7 @@ def signup(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
+            user.groups.add(Group.objects.get(name="normal_user"))
             auth_login(request, user)
             return redirect("todo/dashboard/")
     else:
@@ -26,7 +28,7 @@ def login(request):
                 return HttpResponse("user not found")
             if user.check_password(form.cleaned_data["password"]):
                 auth_login(request, user)
-                return redirect("todo/dashboard/")
+                return redirect("/todolist/")
     else:
         form = LoginForm()
     return render(request, "login.html", {"form": form})

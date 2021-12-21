@@ -37,9 +37,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "todo.apps.TodoConfig",
     "rest_framework.authtoken",
     "user",
+    "todo",
     "crispy_forms",
 ]
 
@@ -74,6 +74,8 @@ TEMPLATES = [
 WSGI_APPLICATION = "todosite.wsgi.application"
 AUTH_USER_MODEL = "user.User"
 LOGIN_URL = "/user/login"
+
+AUTHENTICATION_BACKENDS = (("django.contrib.auth.backends.ModelBackend"),)
 
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",

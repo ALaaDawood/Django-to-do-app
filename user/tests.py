@@ -1,8 +1,7 @@
 from django.test import TestCase
 from user.forms import LoginForm, RegisterForm
 from user.models import User
-
-from user.views import signup
+from django.contrib import auth
 
 test_email = "test@email.com"
 required_err_msg = "This field is required."
@@ -58,3 +57,15 @@ class TestLoginForm(TestCase):
         self.assertEqual(form.is_valid(), False)
         self.assertEqual(form.errors["email"][0], required_err_msg)
         self.assertEqual(form.errors["password"][0], required_err_msg)
+
+
+class AuthTestCase(TestCase):
+    def setUp(self):
+        self.u = User.objects.create_user("test@dom.com", "pass")
+        self.u.staff = True
+        self.u.superuser = True
+        self.u.active = True
+        self.u.save()
+
+    def testLogin(self):
+        self.client.login(username="test@dom.com", password="pass")

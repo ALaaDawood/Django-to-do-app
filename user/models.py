@@ -1,7 +1,11 @@
 from django.contrib.auth.hashers import make_password
 from django.db import models
 from rest_framework.authtoken.models import Token
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.contrib.auth.models import (
+    BaseUserManager,
+    AbstractBaseUser,
+    PermissionsMixin,
+)
 
 
 class UserManager(BaseUserManager):
@@ -46,24 +50,25 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser):
+class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
         verbose_name="email address",
         max_length=255,
         unique=True,
     )
     is_active = models.BooleanField(default=True)
-    staff = models.BooleanField(default=False)  # a admin user; non super-user
-    admin = models.BooleanField(default=False)  # a superuser
+    is_staff = models.BooleanField(default=False)  # a admin user; non super-user
+    is_superuser = models.BooleanField(default=False)  # a superuser
     first_name = models.CharField(verbose_name="first name", max_length=100)
     last_name = models.CharField(verbose_name="last name", max_length=100)
+    date_joined = models.DateTimeField(auto_now_add=True, max_length=100)
+    username = models.CharField(default="", verbose_name="username", max_length=100)
 
     # notice the absence of a "Password field", that is built in.
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     def get_full_name(self):
-
         return self.first_name + self.last_name
 
     def get_short_name(self):
@@ -76,22 +81,12 @@ class User(AbstractBaseUser):
     def has_perm(self, perm, obj=None):
         "Does the user have a specific permission?"
         # Simplest possible answer: Yes, always
-        return True
+        return self.is_superuser
 
     def has_module_perms(self, app_label):
         "Does the user have permissions to view the app `app_label`?"
         # Simplest possible answer: Yes, always
-        return True
-
-    @property
-    def is_staff(self):
-        "Is the user a member of staff?"
-        return self.staff
-
-    @property
-    def is_admin(self):
-        "Is the user a admin member?"
-        return self.admin
+        return self.is_superuser
 
     @property
     def token(self):
