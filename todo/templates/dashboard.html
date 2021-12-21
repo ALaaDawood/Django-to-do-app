@@ -40,6 +40,10 @@ Tasks -
     .todo-item.editing .todo-actions .edit-icon {
         display: none !important;
     }
+
+    .add-new-btn {
+        float: right;
+    }
 </style>
 {% block content %}
 <div class="container m-6 p-2 rounded mx-auto bg-light shadow">
@@ -49,6 +53,8 @@ Tasks -
                 <i class="fa fa-check bg-primary text-white rounded p-2"></i>
                 <u>My Todo-s</u>
             </div>
+            <a class="btn btn-primary" href="/todolist/add/" role="button">Add New</a>
+            <a class="btn btn-danger" href="/user/logout" role="button">Logout</a>
         </div>
     </div>
     <div class="row mx-1 px-5 pb-3 w-80">
@@ -56,34 +62,23 @@ Tasks -
             <!-- Todo Item 1 -->
             {% for task in tasks %}
             <div class="row px-3 align-items-center todo-item rounded">
-                <!-- <div class="col-auto m-1 p-0 d-flex align-items-center">
-                    <h2 class="m-0 p-0">
-                        <i class="fa fa-square-o text-primary btn m-0 p-0 d-none" data-toggle="tooltip" data-placement="bottom" title="Mark as complete"></i>
-                        <i class="fa fa-check-square-o text-primary btn m-0 p-0" data-toggle="tooltip" data-placement="bottom" title="Mark as todo"></i>
-                    </h2>
-                </div> -->
                 <div class="col px-1 m-1 d-flex align-items-center">
-                    <h4 class="mb-0"><a href="{{task.id}}">{{task.id}}</a> </h4>
-                    <input type="text"
-                        class="form-control form-control-lg border-0 edit-todo-input bg-transparent rounded px-3"
-                        readonly value="{{task.title}}" title="{{task.title}}" />
-                    <input type="text" class="form-control form-control-lg border-0 edit-todo-input rounded px-3 d-none"
-                        value="{{task.title}}" />
+                    <a href="{{task.id}}">
+                        <h4 class="mb-0">{{task.id}} </h4>
+                        <input type="text"
+                            class="form-control form-control-lg border-0 edit-todo-input bg-transparent rounded px-3"
+                            readonly value="{{task.title}}" title="{{task.title}}" />
+                        <input type="text"
+                            class="form-control form-control-lg border-0 edit-todo-input rounded px-3 d-none"
+                            value="{{task.title}}" />
+                    </a>
                 </div>
                 <div class="col px-1  m-1 d-flex">
                     <h4 class="mb-0"><span
-                            class="{% if task.state == 'T' %}badge bg-dark{% endif %} {% if task.state == 'I' %}badge bg-primary{% endif %} {% if task.state == 'D' %}badge bg-success{% endif %}">{{task.get_state_display}}</span>
+                            class="{% if task.state == 'T' %}badge bg-secondary{% endif %} {% if task.state == 'I' %}badge bg-primary{% endif %} {% if task.state == 'D' %}badge bg-success{% endif %}">{{task.get_state_display}}</span>
                     </h4>
                 </div>
                 <div class="col-auto m-1 p-0 todo-actions">
-                    <!-- <div class="row d-flex align-items-center justify-content-end">
-                        <h5 class="m-0 p-0 px-2">
-                            <i class="fa fa-pencil text-info btn m-0 p-0" data-toggle="tooltip" data-placement="bottom" title="Edit todo"></i>
-                        </h5>
-                        <h5 class="m-0 p-0 px-2">
-                            <i class="fa fa-trash-o text-danger btn m-0 p-0" data-toggle="tooltip" data-placement="bottom" title="Delete todo"></i>
-                        </h5>
-                    </div> -->
                     <div class="row todo-created-info">
                         <div class="col-auto d-flex align-items-center pr-2">
                             <i class="fa fa-info-circle my-2 px-2 text-black-50 btn" data-toggle="tooltip"

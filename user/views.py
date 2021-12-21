@@ -1,6 +1,6 @@
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
-from django.contrib.auth import login as auth_login
+from django.contrib.auth import login as auth_login, logout
 from django.contrib.auth.models import Group
 from user.forms import LoginForm, RegisterForm, User
 
@@ -12,7 +12,7 @@ def signup(request):
             user = form.save()
             user.groups.add(Group.objects.get(name="normal_user"))
             auth_login(request, user)
-            return redirect("todo/dashboard/")
+            return redirect("/todolist/")
     else:
         form = RegisterForm()
     return render(request, "register.html", {"form": form})
@@ -32,3 +32,8 @@ def login(request):
     else:
         form = LoginForm()
     return render(request, "login.html", {"form": form})
+
+
+def logout_user(request):
+    logout(request)
+    return redirect("/user/login?next=/")
