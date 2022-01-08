@@ -94,7 +94,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         return token
 
     def save(self, *args, **kwargs):
-        self.password = make_password(self.password)
+        self.set_password(self.password)
         super(User, self).save(*args, **kwargs)
 
     objects = UserManager()
