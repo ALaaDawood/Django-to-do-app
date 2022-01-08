@@ -19,7 +19,7 @@ def admin_user_check(user):
     return user.is_admin
 
 
-@permission_required(["todo.change_task", "todo.add_task"])
+@permission_required(["todo.change_task", "todo.add_task"], raise_exception=True)
 def task_view(request, task_id=None):
     if task_id is None:
         task = Task()
