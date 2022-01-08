@@ -1,4 +1,4 @@
-from django.test import TestCase, client
+from django.test import TestCase
 from todo.models import Task, TASKSTATES
 from django.test import Client
 
@@ -22,7 +22,9 @@ class TestTaskModel(TestCase):
 class TestTaskView(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = User.objects.create_user("email@email.com", "password")
+        self.user = User.objects.create_user(
+            email="email@email.com", password="password"
+        )
 
     def test_task_default_state(self):
         todo_task = Task.objects.create(title="test first task with default state")
@@ -32,50 +34,45 @@ class TestTaskView(TestCase):
             in_progress_task.get_state_display(), TASKSTATES.INPROGRESS.label
         )
 
-    # def test_task_view_get_task(self):
-    #     # self.client.login(email="email@email.com", password="password")
-    #     task = Task.objects.create(title="to do task")
-    #     response = self.client.get(f"/todolist/{task.id}/")
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed("task.html")
+    def test_task_view_get_task(self):
+        self.user.is_superuser = True
+        self.user.save()
+        self.client.force_login(self.user)
+        task = Task.objects.create(title="to do task")
+        response = self.client.get(f"/todolist/{task.id}/")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed("task.html")
 
     def test_admin_can_create_task(self):
-        admin_user = User.objects.create_superuser("admin@admin.com", "123456")
-        self.client.post(
-            "/user/login/", {"email": "email@email.com", "password": "password"}
-        )
+        self.user.is_superuser = True
+        self.user.save()
+        self.client.force_login(self.user)
         task = {"title": "TaskTest", "state": "I"}
         response = self.client.post("/todolist/add/", task)
+
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Task.objects.filter(title="TaskTest").count(), 1)
 
-    # def test_admin_can_edit_task(self):
-    #     admin_user = User.objects.create_superuser("admin@admin.com", "123456")
-    #     self.client.post(
-    #         "/user/login/", {"email": "email@email.com", "password": "password"}
-    #     )
-    #     task = Task.objects.create(title="secondTask", state="T")
-    #     response = self.client.post(
-    #         f"/todolist/{task.id}/", {"title": "TaskTest1", "state": "I"}
-    #     )
-    #     self.assertEqual(response.status_code, 302)
-    #     task.refresh_from_db()
-    #     self.assertEqual(task.title, "TaskTest1")
-    #     self.assertEqual(Task.objects.filter(title="secondTask").count(), 0)
+    def test_admin_can_edit_task(self):
+        self.user.is_superuser = True
+        self.user.save()
+        self.client.force_login(self.user)
+        task = Task.objects.create(title="secondTask", state="T")
+        response = self.client.post(
+            f"/todolist/{task.id}/", {"title": "TaskTest1", "state": "I"}
+        )
+        self.assertEqual(response.status_code, 302)
+        task.refresh_from_db()
+        self.assertEqual(task.title, "TaskTest1")
+        self.assertEqual(Task.objects.filter(title="secondTask").count(), 0)
 
     def test_regular_user_can_view_task_list(self):
-        user = User.objects.create_user("user@user.com", "123456")
-        self.client.post(
-            "/user/login/", {"email": "email@email.com", "password": "password"}
-        )
-        response = self.client.get("")
+        self.client.force_login(self.user)
+        response = self.client.get("/todolist/")
         self.assertEqual(response.status_code, 200)
 
     def regular_user_cannot_edit_task(self):
-        user = User.objects.create_user("user@user.com", "123456")
-        self.client.post(
-            "/user/login/", {"email": "email@email.com", "password": "password"}
-        )
+        self.client.force_login(self.user)
         task = Task.objects.create(title="secondTask", state="T")
         response = self.client.post(
             f"/todolist/{task.id}/", {"title": "TaskTest1", "state": "I"}
